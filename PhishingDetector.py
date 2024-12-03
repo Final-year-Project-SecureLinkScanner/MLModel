@@ -3,11 +3,21 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
+def preprocess_data(data):
+    # Handle missing values
+    data = data.fillna(method='ffill')
+    
+    # Convert categorical variables to numeric
+    for column in data.select_dtypes(include=['object']).columns:
+        data[column] = pd.factorize(data[column])[0]
+    
+    return data
+
 # Load dataset
 data = pd.read_csv('phishing_data.csv')
 
 # Preprocess data
-# ...existing code...
+data = preprocess_data(data)
 
 # Split data into features and target
 X = data.drop('target', axis=1)
