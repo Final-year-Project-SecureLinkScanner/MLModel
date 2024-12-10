@@ -1,45 +1,25 @@
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
-def preprocess_data(data):
-    # Handle missing values
-    data = data.fillna(method='ffill')
-    
-    # Convert categorical variables to numeric
-    for column in data.select_dtypes(include=['object']).columns:
-        data[column] = pd.factorize(data[column])[0]
-    
-    return data
+app = Flask(__name__)
+CORS(app)  # Enable CORS for cross-origin requests
 
-# Load dataset
-data = pd.read_csv('phishing_data.csv')
+@app.route('/api/log-url', methods=['POST'])
+def log_url():
+    try:
+        # Retrieve the URL from the request
+        data = request.json
+        if not data or 'url' not in data:
+            return jsonify({'error': 'URL is required'}), 400
 
-# Preprocess data
-data = preprocess_data(data)
+        url = data['url']
 
-# Split data into features and target
-X = data.drop('target', axis=1)
-y = data['target']
+        # Log the URL to the terminal
+        print(f"Received URL: {url}")
 
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Initialize and train the model
-model = LogisticRegression()
-model.fit(X_train, y_train)
-
-# Make predictions
-y_pred = model.predict(X_test)
-
-# Output Safe or Not Safe
-output = ['Safe' if pred == 0 else 'Not Safe' for pred in y_pred]
-
-# Evaluate the model
-accuracy = accuracy_score(y_test, y_pred)
-print(f'Accuracy: {accuracy}')
-
-# Print the output
-for i, pred in enumerate(output):
-    print(f'Instance {i}: {pred}')
+        # Respond with success
+        return jsonify({'message': f'URL received: {url}'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
