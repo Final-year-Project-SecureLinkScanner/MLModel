@@ -149,15 +149,15 @@ def predict_url():
     phish_probability = model.predict_proba(features)[0][1]
     legit_probability = 1 - phish_probability
 
-    if phish_probability > 0.65:
+    if phish_probability >= 0.50:
         result = "PHISHING"
-        warning = "🚨 Unsafe — high-confidence phishing"
-    elif phish_probability >= 0.35:
+        warning = "🚨 Unsafe — the model predicts this is a phishing site"
+    elif phish_probability >= 0.20:
         result = "SUSPICIOUS"
-        warning = "⚠️ Caution — suspicious traits detected"
+        warning = "⚠️ Proceed with caution — suspicious characteristics detected"
     else:
         result = "LEGITIMATE"
-        warning = "✅ Likely safe"
+        warning = "✅ Safe to proceed"
 
     return jsonify({
         'URL': url,
