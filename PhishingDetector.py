@@ -98,14 +98,14 @@ def extract_url_features(url):
 
     # Feature extraction
     features = {
-        "having_IPhaving_IP_Address": 1 if re.match(r"(\d{1,3}\.){3}\d{1,3}", url) else -1,
+        "having_IPhaving_IP_Address": 2 if re.match(r"(\d{1,3}\.){3}\d{1,3}", url) else -1,
         "URLURL_Length": 1 if len(url) > 75 else -1,
-        "Shortining_Service": 1 if any(short in url for short in ["bit.ly", "goo.gl", "tinyurl"]) else -1,
-        "having_At_Symbol": 1 if "@" in url else -1,
+        "Shortining_Service": 1.5 if any(short in url for short in ["bit.ly", "goo.gl", "tinyurl"]) else -1,
+        "having_At_Symbol": 2 if "@" in url else -1,
         "double_slash_redirecting": 1 if "//" in url[7:] else -1,
         "Prefix_Suffix": 1 if "-" in domain else -1,
         "having_Sub_Domain": get_subdomain_count(domain),
-        "SSLfinal_State": 1 if url.startswith("https://") else -1,
+        "SSLfinal_State": -0.5 if url.startswith("https://") else 1,
         "Domain_registeration_length": get_domain_age(domain),
         "Favicon": check_favicon(url),
         "port": check_port(domain, 443),
@@ -149,15 +149,15 @@ def predict_url():
     phish_probability = model.predict_proba(features)[0][1]
     legit_probability = 1 - phish_probability
 
-    if phish_probability > 0.50:
+    if phish_probability > 0.65:
         result = "PHISHING"
-        warning = "🚨 Unsafe — the model predicts this is a phishing site"
-    elif phish_probability >= 0.20:
+        warning = "🚨 Unsafe — high-confidence phishing"
+    elif phish_probability >= 0.35:
         result = "SUSPICIOUS"
-        warning = "⚠️ Proceed with caution — suspicious characteristics detected"
+        warning = "⚠️ Caution — suspicious traits detected"
     else:
         result = "LEGITIMATE"
-        warning = "✅ Safe to proceed"
+        warning = "✅ Likely safe"
 
     return jsonify({
         'URL': url,
