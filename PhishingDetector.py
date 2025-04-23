@@ -104,28 +104,28 @@ def extract_url_features(url):
         "having_At_Symbol": 2 if "@" in url else -1,
         "double_slash_redirecting": 1 if "//" in url[7:] else -1,
         "Prefix_Suffix": 1 if "-" in domain else -1,
-        "having_Sub_Domain": get_subdomain_count(domain),
-        "SSLfinal_State": -0.5 if url.startswith("https://") else 1,
+        "having_Sub_Domain": get_subdomain_count(domain),  
+        "SSLfinal_State": 2 if url.startswith("https://") else -1,  # Adjusted weight
         "Domain_registeration_length": get_domain_age(domain),
         "Favicon": check_favicon(url),
         "port": check_port(domain, 443),
         "HTTPS_token": 1 if "https" in domain else -1,
         "Request_URL": 1 if "external" in url.lower() else -1,
-        "URL_of_Anchor": count_external_links(url, domain),
-        "Links_in_tags": count_external_links(url, domain),
+        "URL_of_Anchor": count_external_links(url, domain),  
+        "Links_in_tags": count_external_links(url, domain),  
         "SFH": -1,  
         "Submitting_to_email": 1 if "mailto:" in url else -1,
         "Abnormal_URL": 1 if domain not in url else -1,
         "Redirect": 1 if url.count("//") > 2 else -1,
         "on_mouseover": 1,  
         "RightClick": 1,  
-        "popUpWidnow": 1,  
+        "popUpWidnow": -1,  # Dropped due to correlation with favicon
         "Iframe": 1,  
         "age_of_domain": get_domain_age(domain),
-        "DNSRecord": check_dns(domain),
-        "web_traffic": -1,  
-        "Page_Rank": -1,  
-        "Google_Index": -1,  
+        "DNSRecord": -1,  # Removed due to low importance
+        "web_traffic": -1, 
+        "Page_Rank": -1,  # Removed due to low importance
+        "Google_Index": -1,  # Removed due to low importance
         "Links_pointing_to_page": 1,  
         "Statistical_report": -1,  
     }
