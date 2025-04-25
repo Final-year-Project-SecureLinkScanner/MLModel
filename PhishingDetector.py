@@ -175,16 +175,18 @@ def predict_url():
     if hasattr(instance_shap, 'ndim') and instance_shap.ndim > 1:
         instance_shap = instance_shap[0]
 
-    top_features = sorted(zip(feature_names, instance_shap), key=lambda x: abs(x[1]), reverse=True)
+    # Show all SHAP values for every feature
+    all_features_with_shap = sorted(zip(feature_names, instance_shap), key=lambda x: abs(x[1]), reverse=True)
 
     reasons = []
-    for feature, shap_val in top_features[:5]:
+    for feature, shap_val in all_features_with_shap:
         explanation = feature_explanations.get(feature, feature)
         reasons.append({
             "feature": feature,
             "explanation": explanation,
             "impact": round(shap_val, 4)
         })
+
 
     if phish_probability >= 0.50:
         result = "PHISHING"
