@@ -208,7 +208,7 @@ def predict_url():
         'Legitimate Confidence': f"{legit_probability:.2%}",
         'Phishing Confidence': f"{phish_probability:.2%}",
         'Warning Level': warning,
-        'SHAP Explainations': reasons
+        'SHAP Explanations': reasons
     })
 
 if __name__ == '__main__':
