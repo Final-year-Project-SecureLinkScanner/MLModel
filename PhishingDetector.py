@@ -16,7 +16,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for cross-origin requests
 
 # Load trained model
-model = joblib.load("Trained_Models/Final_Grid_model2.pkl")
+model = joblib.load("Trained_Models/Final_Grid_model3_IMP.pkl")
 feature_names = model.feature_names_in_
 
 # Initialise SHAP explainer
@@ -172,6 +172,10 @@ def predict_url():
         instance_shap = shap_values[1][0]
     else:
         instance_shap = shap_values[0]
+        print("SHAP count:", len(instance_shap))
+    print("SHAP values:", instance_shap)
+    print("Feature names from model:", feature_names)
+
     if hasattr(instance_shap, 'ndim') and instance_shap.ndim > 1:
         instance_shap = instance_shap[0]
 
