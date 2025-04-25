@@ -184,6 +184,10 @@ def predict_url():
             "impact": round(shap_val, 4)
         })
 
+    # Sort by absolute impact, but do NOT slice the list
+    reasons.sort(key=lambda x: abs(x["impact"]), reverse=True)
+
+
     if phish_probability >= 0.55:
         result = "PHISHING"
         warning = "\ud83d\udea8 Unsafe \u2014 the model predicts this is a phishing site"
