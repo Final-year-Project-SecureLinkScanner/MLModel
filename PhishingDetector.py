@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-# Initialize Flask app
+# Initialise Flask app
 app = Flask(__name__)
 CORS(app)  # Enable CORS for cross-origin requests
 
@@ -167,23 +167,16 @@ def predict_url():
 
     shap_values = explainer.shap_values(features)
 
-    # SHAP: calculate top reasons
     if isinstance(shap_values, list) and len(shap_values) > 1:
         instance_shap = shap_values[1][0]
     else:
         instance_shap = shap_values[0]
-        print("SHAP count:", len(instance_shap))
-    print("SHAP values:", instance_shap)
-    print("Feature names from model:", feature_names)
 
     if hasattr(instance_shap, 'ndim') and instance_shap.ndim > 1:
         instance_shap = instance_shap[0]
 
-    # Show all SHAP values for every feature
-    all_features_with_shap = sorted(zip(feature_names, instance_shap), key=lambda x: abs(x[1]), reverse=True)
-
     reasons = []
-    for feature, shap_val in all_features_with_shap:
+    for feature, shap_val in zip(feature_names, instance_shap):
         explanation = feature_explanations.get(feature, feature)
         reasons.append({
             "feature": feature,
@@ -191,16 +184,15 @@ def predict_url():
             "impact": round(shap_val, 4)
         })
 
-
     if phish_probability >= 0.55:
         result = "PHISHING"
-        warning = "🚨 Unsafe — the model predicts this is a phishing site"
+        warning = "\ud83d\udea8 Unsafe \u2014 the model predicts this is a phishing site"
     elif phish_probability >= 0.20:
         result = "SUSPICIOUS"
-        warning = "⚠️ Proceed with caution — suspicious characteristics detected"
+        warning = "\u26a0\ufe0f Proceed with caution \u2014 suspicious characteristics detected"
     else:
         result = "LEGITIMATE"
-        warning = "✅ Safe to proceed"
+        warning = "\u2705 Safe to proceed"
 
     return jsonify({
         'URL': url,
