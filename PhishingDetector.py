@@ -172,6 +172,8 @@ def predict_url():
         instance_shap = shap_values[1][0]
     else:
         instance_shap = shap_values[0]
+    if hasattr(instance_shap, 'ndim') and instance_shap.ndim > 1:
+        instance_shap = instance_shap[0]
 
     top_features = sorted(zip(feature_names, instance_shap), key=lambda x: abs(x[1]), reverse=True)
 
