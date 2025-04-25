@@ -22,7 +22,7 @@ feature_names = model.feature_names_in_
 # Initialise SHAP explainer
 explainer = shap.TreeExplainer(model)
 
-# readable explanations for top features
+# readable explanations for features
 feature_explanations = {
     "having_IPhaving_IP_Address": "URL uses an IP address",
     "URLURL_Length": "URL is unusually long",
@@ -192,7 +192,7 @@ def predict_url():
         })
 
 
-    if phish_probability >= 0.50:
+    if phish_probability >= 0.55:
         result = "PHISHING"
         warning = "🚨 Unsafe — the model predicts this is a phishing site"
     elif phish_probability >= 0.20:
@@ -208,7 +208,7 @@ def predict_url():
         'Legitimate Confidence': f"{legit_probability:.2%}",
         'Phishing Confidence': f"{phish_probability:.2%}",
         'Warning Level': warning,
-        'Top Reasons': reasons
+        'SHAP Explainations': reasons
     })
 
 if __name__ == '__main__':
