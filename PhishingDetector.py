@@ -19,7 +19,7 @@ CORS(app)  # Enable CORS for cross-origin requests
 model = joblib.load("Trained_Models/Final_Grid_model2.pkl")
 feature_names = model.feature_names_in_
 
-# Initialize SHAP explainer
+# Initialise SHAP explainer
 explainer = shap.TreeExplainer(model)
 
 # readable explanations for top features
@@ -165,9 +165,14 @@ def predict_url():
     phish_probability = model.predict_proba(features)[0][1]
     legit_probability = 1 - phish_probability
 
-    # SHAP: calculate top reasons
     shap_values = explainer.shap_values(features)
-    instance_shap = shap_values[1][0]
+
+    # SHAP: calculate top reasons
+    if isinstance(shap_values, list) and len(shap_values) > 1:
+        instance_shap = shap_values[1][0]
+    else:
+        instance_shap = shap_values[0]
+
     top_features = sorted(zip(feature_names, instance_shap), key=lambda x: abs(x[1]), reverse=True)
 
     reasons = []
