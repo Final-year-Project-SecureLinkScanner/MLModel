@@ -20,7 +20,7 @@ model = joblib.load("Trained_Models/Final_Grid_model3_IMP.pkl")
 feature_names = model.feature_names_in_
 
 # Initialise SHAP explainer
-explainer = shap.TreeExplainer(model)
+# explainer = shap.TreeExplainer(model)
 
 # readable explanations for features
 feature_explanations = {
@@ -165,27 +165,27 @@ def predict_url():
     phish_probability = model.predict_proba(features)[0][1]
     legit_probability = 1 - phish_probability
 
-    shap_values = explainer.shap_values(features)
+    # shap_values = explainer.shap_values(features)
 
-    if isinstance(shap_values, list) and len(shap_values) > 1:
-        instance_shap = shap_values[1][0]
-    else:
-        instance_shap = shap_values[0]
+    # if isinstance(shap_values, list) and len(shap_values) > 1:
+    #     instance_shap = shap_values[1][0]
+    # else:
+    #     instance_shap = shap_values[0]
 
-    if hasattr(instance_shap, 'ndim') and instance_shap.ndim > 1:
-        instance_shap = instance_shap[0]
+    # if hasattr(instance_shap, 'ndim') and instance_shap.ndim > 1:
+    #     instance_shap = instance_shap[0]
 
-    reasons = []
-    for feature, shap_val in zip(feature_names, instance_shap):
-        explanation = feature_explanations.get(feature, feature)
-        reasons.append({
-            "feature": feature,
-            "explanation": explanation,
-            "impact": round(shap_val, 4)
-        })
+    # reasons = []
+    # for feature, shap_val in zip(feature_names, instance_shap):
+    #     explanation = feature_explanations.get(feature, feature)
+    #     reasons.append({
+    #         "feature": feature,
+    #         "explanation": explanation,
+    #         "impact": round(shap_val, 4)
+    #     })
 
-    # Sort by absolute impact, but do NOT slice the list
-    reasons.sort(key=lambda x: abs(x["impact"]), reverse=True)
+    # # Sort by absolute impact, but do NOT slice the list
+    # reasons.sort(key=lambda x: abs(x["impact"]), reverse=True)
 
 
     if phish_probability >= 0.55:
@@ -204,7 +204,7 @@ def predict_url():
         'Legitimate Confidence': f"{legit_probability:.2%}",
         'Phishing Confidence': f"{phish_probability:.2%}",
         'Warning Level': warning,
-        'SHAP Explanations': reasons
+        # 'SHAP Explanations': reasons
     })
 
 if __name__ == '__main__':
